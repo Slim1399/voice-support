@@ -1,0 +1,117 @@
+blueprint:
+  domain: automation
+  name: Assistant Musical - Support Vocal Local (Blueprint)
+  source_url: https://github.com/music-assistant/voice-support/blob/main/local-assist-blueprint/mass_assist_blueprint_fr.yaml
+  description: '![Image](https://github.com/music-assistant/voice-support/blob/main/assets/music-assistant.png?raw=true)
+
+    # Jouer des médias avec des commandes vocales
+
+    ### Configuration du blueprint
+
+    #### Obligatoire
+
+    * Définir un `Lecteur par Défaut` à utiliser lorsque aucune cible n''est mentionnée dans la demande
+    et que la demande ne provient pas d''une zone avec un lecteur Assistant Musical.
+
+    #### Optionnel
+
+    * Modifier la phrase de déclenchement ou en ajouter d'autres, vous pouvez également utiliser ceci pour traduire
+    la phrase dans votre propre langue.
+
+    * Modifier les réponses ou les traduire dans votre propre langue.
+
+    ### Utilisation
+
+    Toutes les phrases doivent :
+
+    * commencer par les mots `Mélanger`, `Jouer` ou `Écouter` suivi par le type d''élément `artiste`/`titre`/`album`/`playlist`/`radio`
+    puis le nom de l''élément. Si la phrase commence par `Mélanger`, le lecteur qui joue la demande activera également le mode aléatoire,
+    sinon il sera désactivé.
+
+    * pour album et titre être éventuellement suivi de `par l'artiste` puis du nom de l'artiste
+
+    * être éventuellement suivi par le nom d'une zone ou d'un appareil
+
+    * pour artiste, titre, album ou playlist, être éventuellement suivi par la phrase
+    `en mode radio`
+
+    #### Variations acceptées
+
+    L'utilisation de l'article `le` est optionnelle.
+
+    |Type de média|Variations acceptées|
+
+    |---|---|
+
+    |`artiste`|`groupe`, `chanteur`|
+
+    |`titre`|`chanson`|
+
+    |`radio`|`station de radio`, `radio`|
+
+    |`playlist`||
+
+    #### Exemples
+
+    ```
+    Jouer l'artiste Pink Floyd dans la cuisine
+
+    Écouter l'album Jagged Little Pill dans le bureau
+
+    Écouter l'album Greatest Hits par l'artiste James Taylor dans la cuisine
+
+    Jouer le titre New Years Day dans la chambre
+
+    Jouer le titre New Years Day dans la chambre en mode radio
+
+    Jouer la chanson A Hard Days Night par Billy Joel dans la chambre
+
+    Écouter la playlist Classic Rock dans le bureau
+
+    Écouter la station de radio BBC Radio 1 dans la chambre
+
+    Jouer l'album Classical Nights sur le haut-parleur Sonos de la chambre
+
+    Écouter le disque Classical Nights sur le haut-parleur Sonos de la chambre
+
+    Jouer le groupe U2
+
+    Mélanger les chansons de Muse.
+
+    Mélanger l'album Classical Nights sur le haut-parleur Sonos de la chambre
+    ```'
+  input:
+    default_player_entity_id_input:
+      name: Lecteur Média par Défaut
+      selector:
+        entity:
+          filter:
+          - integration: music_assistant
+            domain:
+            - media_player
+          multiple: false
+    trigger_response_settings:
+      name: Paramètres de déclenchement et de réponse pour l'Assistant
+      icon: mdi:chat
+      description: 'Vous pouvez modifier les déclencheurs existants ou en ajouter dans ces paramètres.
+        Mettez le texte entre crochets [ ] pour le rendre optionnel. Avec des parenthèses ( ) et un pipe |, 
+        vous pouvez entrer plusieurs valeurs qui seront traitées comme un ''ou''. { requête } est une valeur générique
+        contenant les informations demandées et éventuellement la zone ou le lecteur Assistant Musical.
+
+        Vous pouvez également définir les réponses que l'Assistant donnera. Il utilise des modèles jinja qui
+        seront remplacés par les informations du média et le nom du lecteur Assistant Musical.'
+      collapsed: true
+      input:
+        album_trigger:
+          name: Déclencheur pour Album
+          description: Les phrases déclencheurs pour demander un album spécifique.
+          selector:
+            text:
+              multiline: false
+              multiple: true
+          default:
+          - (mélanger|jouer|écouter) [l'](album|ep|disque|compilation|single) {media_name}
+            [par [l'](artiste|groupe|chanteur) {artist}] [(dans|sur|en utilisant) [le ]{area_or_player_name}][
+            (avec|en utilisant) {radio_mode}]
+# (Traduction des autres déclencheurs et des réponses similaires pour Track, Artist, Playlist, Radio)
+...
